@@ -1,0 +1,165 @@
+<%- |
+    Variant[Boolean, Undef]                 $debug = undef,
+    Variant[Boolean, Enum['true', 'false']] $as_connect = true,
+    String                                  $tmp_dir = '~/tmp',
+    String                                  $lic_dir = '~/licenses',
+    Integer                                 $run_start_retry_give_up = 60,
+    Integer                                 $run_start_retry_resample = 10,
+    Variant[Boolean, Enum['true', 'false']] $sa_show_c2s_routes = true,
+    String                                  $certs_db = 'sqlite:///~/db/certs.db',
+    String                                  $user_prop_db = 'sqlite:///~/db/userprop.db',
+    String                                  $config_db = 'sqlite:///~/db/config.db',
+    String                                  $log_db = 'sqlite:///~/db/log.db',
+    Integer                                 $db_retry_interval = 1,
+    Integer                                 $db_retry_n_attempts = 6,
+    Variant[Enum[''], Integer]              $db_startup_wait = '',
+    Enum['PRIMARY', 'SECONDARY', '']        $node_type = '',
+    String                                  $boot_pam_service = 'openvpnas',
+    Array[String]                           $boot_pam_users = ['', '', '', '', ''],
+    Array[String]                           $system_users_local = ['root', 'openvpn_as'],
+    String                                  $cs_user = 'openvpn_as',
+    String                                  $cs_group = 'openvpn_as',
+    String                                  $general_sock_dir = '~/sock',
+    Variant[Undef, String]                  $general_openvpn_exe_path = undef,
+    String                                  $sa_win_exe_dir = '~/exe',
+    String                                  $sa_company_name = 'OpenVPN Technologies, Inc.',
+    String                                  $sa_sock = '~/sock/sagent',
+    Variant[Boolean, Enum['true', 'false']] $cs_auto_generate = 'true',
+    String                                  $cs_ca_bundle = '~/web-ssl/ca.crt',
+    String                                  $cs_priv_key = '~/web-ssl/server.key',
+    String                                  $cs_cert = '~/web-ssl/server.crt',
+    Integer                                 $cs_dynamic_port_base = 870,
+    Array[String]                           $sa_initial_run_groups = ['web_group'],
+    String                                  $sa_reactor = 'epoll',
+    Integer                                 $sa_unit = 0,
+    Variant[Boolean, Enum['true', 'false']] $iptables_web = 'true',
+    String                                  $vpn_server_user = 'openvpn_as',
+    String                                  $vpn_server_group = 'openvpn_as',
+| -%>
+
+# OpenVPN AS 1.1 configuration file
+#
+# NOTE:  The ~ symbol used below expands to the directory that
+# the configuration file is saved in
+
+# remove for production
+    <%- if $debug { -%>
+DEBUG=<%= $debug %>
+    <%- } else { -%>
+# DEBUG=false
+    <%- } -%>
+
+# enable AS Connect functionality
+AS_CONNECT=<%= $as_connect %>
+
+# temporary directory
+tmp_dir=<%= $tmp_dir %>
+
+lic.dir=<%= $lic_dir %>
+
+# run_start retries
+run_start_retry.give_up=<%= $run_start_retry_give_up %>
+run_start_retry.resample=<%= $run_start_retry_resample %>
+
+# enable client gateway
+sa.show_c2s_routes=<%= $sa_show_c2s_routes %>
+
+# certificates database
+certs_db=<%= $certs_db %>
+
+# user properties DB
+user_prop_db=<%= $user_prop_db %>
+
+# configuration DB
+config_db=<%= $config_db %>
+
+# log DB
+log_db=<%= $log_db %>
+
+# wait this many seconds between failed retries
+db_retry.interval=<%= $db_retry_interval %>
+
+# how many retries to attempt before failing
+db_retry.n_attempts=<%= $db_retry_n_attempts %>
+
+# On startup, wait up to n seconds for DB files to become
+# available if they do not yet exist.  This is generally
+# only useful on secondary nodes used for standby purposes.
+db_startup_wait=<%= $db_startup_wait %>
+
+# Node type: PRIMARY|SECONDARY.  Defaults to PRIMARY.
+node_type=<%= $node_type %>
+
+# bootstrap authentication via PAM -- allows
+# admin to log into web UI before authentication
+# system has been configured.  Configure PAM users
+# allowed to access via the bootstrap auth mechanism.
+boot_pam_service=openvpnas
+    <%- $boot_pam_users.each|$index, $value| { -%>
+boot_pam_users.<%= $index %>=<%= $value %>
+    <%- } -%>
+
+# System users that are allowed to access the server agent XML API.
+# The user that the web server will run as should be in this list.
+    <%- $system_users_local.each|$index, $value| { -%>
+system_users_local.<%= $index %>=<%= $value %>
+    <%- } -%>
+
+# The user/group that the web server will run as
+cs.user=<%= $cs_user %>
+cs.group=<%= $cs_group %>
+
+# socket directory
+general.sock_dir=<%= $general_sock_dir %>
+
+# path to linux openvpn executable
+# if undefined, find openvpn on the PATH
+<%- if $general_openvpn_exe_path { -%>
+general.openvpn_exe_path=<%= $general_openvpn_exe_path %>
+<%- } else { -%>
+#general.openvpn_exe_path=
+<%- } -%>
+
+# source directory for OpenVPN Windows executable
+# (Must have been built with MultiFileExtract)
+sa.win_exe_dir=<%= $sa_win_exe_dir %>
+
+# The company name will be shown in the UI
+sa.company_name=<%= $sa_company_name %>
+
+# server agent socket
+sa.sock=<%= $sa_sock %>
+
+# If enabled, automatically generate a client configuration
+# when a client logs into the site and successfully authenticates
+cs.auto_generate=<%= $cs_auto_generate %>
+
+# files for web server (PEM format)
+cs.ca_bundle=<%= $cs_ca_bundle %>
+cs.priv_key=<%= $cs_priv_key %>
+cs.cert=<%= $cs_cert %>
+
+# web server will use three consecutive ports starting at this
+# address, for use with the OpenVPN port share feature
+cs.dynamic_port_base=<%= $cs_dynamic_port_base %>
+
+# which service groups should be started during
+# server agent initialization
+    <%- $sa_initial_run_groups.each |$index, $value| { -%>
+sa.initial_run_groups.<%= $index %>=<%= $value %>
+    <%- } -%>
+
+# use this twisted reactor
+sa.reactor=<%= $sa_reactor %>
+
+# The unit number of this particular AS configuration.
+# Normally set to 0.  If you have multiple, independent AS instances
+# running on the same machine, each should have a unique unit number.
+sa.unit=<%= $sa_unit %>
+
+# If true, open up web ports on the firewall using iptables
+iptables.web=<%= $iptables_web %>
+
+vpn.server.user=<%= $vpn_server_user %>
+vpn.server.group=<%= $vpn_server_group %>
+

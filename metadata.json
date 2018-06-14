@@ -1,0 +1,32 @@
+{
+  "name": "theias-openvpn_as",
+  "version": "0.1.0",
+  "author": "Institute for Advanced Study",
+  "summary": "Install and manage OpenVPN Access Server",
+  "license": "MIT",
+  "source": "https://github.com/theias/openvpn_as.git",
+  "project_page": "https://github.com/theias/openvpn_as.git",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 4.2.0 < 5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7.0"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.7.0 < 6.0.0"
+    }
+  ],
+  "pdk-version": "1.0.1",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-module-template.git",
+  "template-ref": "heads/master-0-g5db7961"
+}
