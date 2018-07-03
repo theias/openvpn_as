@@ -39,7 +39,7 @@ define openvpn_as::confdba (
     }
     # Key/value checking/setting
     $settings.each | $key, $val | {
-      $tmp_file = "${tmp_dir}/${key}"
+      $tmp_file = "${tmp_dir}/${profile}.${key}"
       file { $tmp_file:
         ensure  => 'file',
         content => $val,
