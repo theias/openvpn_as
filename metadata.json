@@ -1,6 +1,6 @@
 {
   "name": "theias-openvpn_as",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Institute for Advanced Study",
   "summary": "Install and manage OpenVPN Access Server",
   "license": "MIT",
