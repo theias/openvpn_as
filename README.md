@@ -1,6 +1,10 @@
 openvpn_as
 ==========
 
++This is deprecated and unmaintained in favor of the official module: https://forge.puppet.com/modules/openvpn/openvpnas/
++
++
++<br><br><br><br><br><br>
 #### Table of Contents
 
 1. [Description](#description)
